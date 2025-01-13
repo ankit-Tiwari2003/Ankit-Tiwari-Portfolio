@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
-
-export default nextConfig;
+const nextConfig = {
+    experimental: {
+      turbo: {}  // Just an empty object is enough to enable Turbopack
+    }
+  };
+  
+  export default nextConfig;
