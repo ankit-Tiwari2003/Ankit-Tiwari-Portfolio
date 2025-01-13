@@ -13,12 +13,10 @@ const projectCount = myProjects.length;
 const Projects = () => {
   const [selectedProjectIndex, setSelectedProjectIndex] = useState(0);
   const [show3D, setShow3D] = useState(true);
-  const [pixelRatio, setPixelRatio] = useState(1);
 
   useEffect(() => {
     const handleResize = () => {
-      setShow3D(window.innerWidth > 768);
-      setPixelRatio(window.innerWidth < 1024 ? 1 : window.innerWidth < 1600 ? 1.5 : 2);
+      setShow3D(window.innerWidth > 768); // Show 3D only for large devices
     };
 
     handleResize();
@@ -50,6 +48,7 @@ const Projects = () => {
     <section className="c-space my-20" id='Projects'>
       <p className="head-text">Skill Showcase Projects</p>
       <div className={`grid ${show3D ? 'lg:grid-cols-2' : 'grid-cols-1'} mt-12 gap-5 w-full`}>
+        {/* Left Content */}
         <div className="flex flex-col gap-5 relative sm:p-10 py-10 px-5 shadow-2xl shadow-black-200">
           <div className="absolute top-0 right-0">
             <img 
@@ -105,10 +104,11 @@ const Projects = () => {
           </div>
         </div>
         
+        {/* 3D Content - Render only on large devices */}
         {show3D && (
           <div className="border border-black-300 bg-black-200 rounded-lg h-96 md:h-full">
             <Canvas
-              dpr={pixelRatio}
+              dpr={[1, 1.5, 2]}
               performance={{ min: 0.5 }}
               gl={{ 
                 powerPreference: "high-performance",
