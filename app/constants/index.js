@@ -161,11 +161,11 @@ export const navLinks = [
   export const workExperiences = [
     {
       id: 1,
-      name: 'Open to Work',
-      pos: 'Full-Stack Developer',
-      duration: 'Jan 2025 - Present',
-      title: "Currently seeking exciting opportunities to contribute as a Full-Stack Developer. I specialize in building high-performance web applications using Next.js and Node.js, with a focus on creating visually appealing UIs and scalable backend features.",
-      icon: '/assets/work.png',
+      name: 'SGI Tech Labs',
+      pos: 'Frontend Developer',
+      duration: 'Feb 2025 - Present',
+      title: "As a Frontend Developer at SGI Tech Labs, I specialize in building responsive and user-friendly web applications using React.js and Next.js. I collaborate with cross-functional teams to deliver high-quality digital solutions that enhance user experience and meet business goals.",
+      icon: '/assets/sgilogo.png',
       animation: 'pulse',
     },
     {
