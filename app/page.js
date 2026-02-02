@@ -9,10 +9,12 @@ import Footer from './sections/Footer'
 import WorkExperience from './sections/Experience'
 import ErrorBoundary from './components/ErrorBoundary'
 import SectionErrorBoundary from './components/SectionErrorBoundary'
+import CustomCursor from './components/CustomCursor'
 
 const Home = () => {
   return (
     <ErrorBoundary>
+      <CustomCursor />
       <main className='max-width-7xl mx-auto'>
         <SectionErrorBoundary name="Navbar">
           <Navbar/>

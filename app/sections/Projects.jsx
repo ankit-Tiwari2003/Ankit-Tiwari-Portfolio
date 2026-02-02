@@ -6,6 +6,7 @@ import { Canvas } from '@react-three/fiber';
 import { Center, OrbitControls } from '@react-three/drei';
 import { myProjects } from '../constants/index.js';
 import CanvasLoader from '../components/Loading.jsx';
+import { addCardHoverEffect, addGlowEffect } from '../utils/hoverEffects.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -26,6 +27,24 @@ const Projects = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+    // Add hover effects to project cards and links
+    addCardHoverEffect('.project-content', 1.01);
+    addGlowEffect('.project-link', '#64ffda');
+
+    // Add glow effect to project cards
+    const projectContent = document.querySelector('.project-content');
+    if (projectContent) {
+      projectContent.addEventListener('mouseenter', () => {
+        projectContent.classList.add('glow-cyan-lg');
+      });
+
+      projectContent.addEventListener('mouseleave', () => {
+        projectContent.classList.remove('glow-cyan-lg');
+      });
+    }
+  }, [selectedProjectIndex]);
 
   const handleNavigation = (direction) => {
     setSelectedProjectIndex((prevIndex) => {
@@ -110,7 +129,7 @@ const Projects = () => {
               ))}
             </div>
             <a
-              className="flex items-center gap-2 cursor-pointer text-white-600"
+              className="project-link flex items-center gap-2 cursor-pointer text-white-600 transition-all duration-300 hover:text-white"
               href={currentProject.href}
               target="_blank"
               rel="noreferrer"

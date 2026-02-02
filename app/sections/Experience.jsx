@@ -43,6 +43,21 @@ const WorkExperience = () => {
         toggleActions: 'play none none reverse',
       },
     });
+
+    // Add glow effects to work items on hover
+    const workItems = document.querySelectorAll('.work-content_container');
+    workItems.forEach((item, index) => {
+      const glows = ['glow-cyan', 'glow-purple', 'glow-blue', 'glow-pink'];
+      const glowClass = glows[index % glows.length];
+
+      item.addEventListener('mouseenter', () => {
+        item.classList.add(glowClass);
+      });
+
+      item.addEventListener('mouseleave', () => {
+        item.classList.remove(glowClass);
+      });
+    });
   }, []);
 
   return (

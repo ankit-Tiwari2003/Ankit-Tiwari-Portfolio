@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { sendEmail } from '@/app/actions/send-email.js';
 import useAlert from '../hooks/useAlert.js';
 import Alert from '../components/Alert.jsx';
+import { addCardHoverEffect } from '../utils/hoverEffects.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -40,6 +41,26 @@ const Contact = () => {
         start: 'top 70%',
         toggleActions: 'play none none reverse',
       },
+    });
+
+    // Add input focus effects
+    const inputs = document.querySelectorAll('.field-input');
+    inputs.forEach((input) => {
+      input.addEventListener('focus', () => {
+        gsap.to(input, {
+          boxShadow: '0 0 20px rgba(100, 255, 218, 0.3)',
+          borderColor: '#64ffda',
+          duration: 0.3,
+        });
+      });
+
+      input.addEventListener('blur', () => {
+        gsap.to(input, {
+          boxShadow: 'none',
+          borderColor: 'rgba(255, 255, 255, 0.1)',
+          duration: 0.3,
+        });
+      });
     });
   }, []);
 

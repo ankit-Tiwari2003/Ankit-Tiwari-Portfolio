@@ -9,7 +9,7 @@ const NavItems = () => {
             {
                 navLinks.map(({id,href,name}) => (
                     <li key={id} className='nav-li'>
-                        <Link href={href} className='nav-li_a' onClick={()=>{}}>{name}</Link>
+                        <Link href={href} className='nav-li_a nav-link-interactive' onClick={()=>{}}>{name}</Link>
                     </li>
                 ))
             }
@@ -43,6 +43,28 @@ const Navbar = () => {
           ease: 'power3.out'
         }
       );
+
+      // Add hover effects to nav links
+      const navLinks = document.querySelectorAll('.nav-link-interactive');
+      navLinks.forEach((link) => {
+        link.addEventListener('mouseenter', function() {
+          gsap.to(this, {
+            color: '#64ffda',
+            textShadow: '0 0 15px rgba(100, 255, 218, 0.6)',
+            duration: 0.3,
+            ease: 'power2.out'
+          });
+        });
+
+        link.addEventListener('mouseleave', function() {
+          gsap.to(this, {
+            color: 'inherit',
+            textShadow: 'none',
+            duration: 0.3,
+            ease: 'power2.out'
+          });
+        });
+      });
     }, []);
 
     const toggleMenu = () => {
@@ -52,8 +74,8 @@ const Navbar = () => {
     <header className='fixed top-0 left-0 right-0 z-50 bg-black/90'>
         <div className='max-w-7xl mx-auto'>
             <div className="flex justify-between items-center py-5 c-space">
-                <Link href='/' className='navbar-brand text-neutral-400 font-bold text-xl hover:text-white'>Ankit Tiwari</Link>
-                <button onClick={toggleMenu} className='text-neutral-400 hover:text-white focus:outline-none sm:hidden flex' aria-label="Toggle Menu">
+                <Link href='/' className='navbar-brand text-neutral-400 font-bold text-xl hover:text-white transition-colors duration-300'>Ankit Tiwari</Link>
+                <button onClick={toggleMenu} className='text-neutral-400 hover:text-white focus:outline-none sm:hidden flex transition-colors duration-300' aria-label="Toggle Menu">
                     <img src={isOpen ? '/assets/close.svg' : '/assets/menu.svg'} alt="toggle" className='w-6 h-6' />
                 </button>
                 <nav className='sm:flex hidden'>

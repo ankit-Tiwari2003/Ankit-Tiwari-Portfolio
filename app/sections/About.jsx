@@ -36,6 +36,21 @@ const About = () => {
       stagger: 0.15,
       delay: 0,
     });
+
+    // Add glow effects to containers on hover
+    const containers = document.querySelectorAll('.grid-container');
+    containers.forEach((container, index) => {
+      const glows = ['glow-cyan', 'glow-blue', 'glow-purple', 'glow-pink', 'glow-emerald'];
+      const glowClass = glows[index % glows.length];
+
+      container.addEventListener('mouseenter', () => {
+        container.classList.add(glowClass);
+      });
+
+      container.addEventListener('mouseleave', () => {
+        container.classList.remove(glowClass);
+      });
+    });
   }, []);
 
   const handleCopy = () => {
