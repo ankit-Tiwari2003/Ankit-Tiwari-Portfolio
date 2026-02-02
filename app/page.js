@@ -7,18 +7,42 @@ import Projects from './sections/Projects'
 import Contact from './sections/Contact'
 import Footer from './sections/Footer'
 import WorkExperience from './sections/Experience'
+import ErrorBoundary from './components/ErrorBoundary'
+import SectionErrorBoundary from './components/SectionErrorBoundary'
 
 const Home = () => {
   return (
-    <main className='max-width-7xl mx-auto'>
-      <Navbar/>
-      <Hero/>
-      <About/>
-      <Projects/>
-      <WorkExperience/>
-      <Contact/>
-      <Footer/>
-    </main>
+    <ErrorBoundary>
+      <main className='max-width-7xl mx-auto'>
+        <SectionErrorBoundary name="Navbar">
+          <Navbar/>
+        </SectionErrorBoundary>
+        
+        <SectionErrorBoundary name="Hero">
+          <Hero/>
+        </SectionErrorBoundary>
+        
+        <SectionErrorBoundary name="About">
+          <About/>
+        </SectionErrorBoundary>
+        
+        <SectionErrorBoundary name="Projects">
+          <Projects/>
+        </SectionErrorBoundary>
+        
+        <SectionErrorBoundary name="Experience">
+          <WorkExperience/>
+        </SectionErrorBoundary>
+        
+        <SectionErrorBoundary name="Contact">
+          <Contact/>
+        </SectionErrorBoundary>
+        
+        <SectionErrorBoundary name="Footer">
+          <Footer/>
+        </SectionErrorBoundary>
+      </main>
+    </ErrorBoundary>
   )
 }
 
