@@ -1,10 +1,13 @@
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { Suspense, useState, useEffect, lazy } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Center, OrbitControls } from '@react-three/drei';
 import { myProjects } from '../constants/index.js';
 import CanvasLoader from '../components/Loading.jsx';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const DemoComputer = lazy(() => import('../components/DemoComputer.jsx'));
 
@@ -35,21 +38,49 @@ const Projects = () => {
   };
 
   useGSAP(() => {
+    // Title animation
+    gsap.set('.projects-title', { opacity: 0, y: 20 });
+    gsap.to('.projects-title', {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: '.projects-title',
+        start: 'top 85%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+
     gsap.fromTo(
       `.animatedText`,
       { opacity: 0 },
       { opacity: 1, duration: 1, stagger: 0.2, ease: 'power2.inOut' }
     );
+
+    // Scroll trigger for project content
+    gsap.set('.project-content', { opacity: 0, y: 40 });
+    gsap.to('.project-content', {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: '.project-content',
+        start: 'top 80%',
+        toggleActions: 'play none none reverse',
+      },
+    });
   }, [selectedProjectIndex]);
 
   const currentProject = myProjects[selectedProjectIndex];
 
   return (
     <section className="c-space my-20" id='Projects'>
-      <p className="head-text">Skill Showcase Projects</p>
+      <p className="head-text projects-title">Skill Showcase Projects</p>
       <div className={`grid ${show3D ? 'lg:grid-cols-2' : 'grid-cols-1'} mt-12 gap-5 w-full`}>
         {/* Left Content */}
-        <div className="flex flex-col gap-5 relative sm:p-10 py-10 px-5 shadow-2xl shadow-black-200">
+        <div className="project-content flex flex-col gap-5 relative sm:p-10 py-10 px-5 shadow-2xl shadow-black-200">
           <div className="absolute top-0 right-0">
             <img 
               src={currentProject.spotlight} 

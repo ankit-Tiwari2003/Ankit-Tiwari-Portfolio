@@ -42,6 +42,35 @@ body {
     @apply bg-gradient-to-r from-[#BEC1CF] from-60% via-[#D5D8EA] via-60% to-[#D5D8EA] to-100% bg-clip-text text-transparent;
   }
 
+  /* accent colors */
+  .accent-blue {
+    @apply text-blue-400;
+  }
+
+  .accent-purple {
+    @apply text-purple-400;
+  }
+
+  .accent-cyan {
+    @apply text-cyan-400;
+  }
+
+  .badge {
+    @apply inline-block px-3 py-1 rounded-full text-xs font-semibold text-white border;
+  }
+
+  .badge-blue {
+    @apply badge border-blue-500 bg-blue-500/10;
+  }
+
+  .badge-purple {
+    @apply badge border-purple-500 bg-purple-500/10;
+  }
+
+  .badge-cyan {
+    @apply badge border-cyan-500 bg-cyan-500/10;
+  }
+
   /* button component */
   .btn {
     @apply flex gap-4 items-center justify-center cursor-pointer p-3 rounded-md bg-black-300  transition-all active:scale-95 text-white mx-auto;

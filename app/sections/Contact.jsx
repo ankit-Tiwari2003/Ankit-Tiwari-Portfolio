@@ -1,12 +1,47 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { sendEmail } from '@/app/actions/send-email.js';
 import useAlert from '../hooks/useAlert.js';
 import Alert from '../components/Alert.jsx';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Contact = () => {
   const { alert, showAlert } = useAlert();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', message: '' });
+
+  useEffect(() => {
+    // Animate contact heading
+    gsap.set('.contact-heading', { opacity: 0, y: 30 });
+    gsap.to('.contact-heading', {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: '.contact-heading',
+        start: 'top 85%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+
+    // Animate form with stagger
+    gsap.set('.field-input, .field-label, .field-btn', { opacity: 0, y: 20 });
+    gsap.to('.field-input, .field-label, .field-btn', {
+      opacity: 1,
+      y: 0,
+      duration: 0.6,
+      stagger: 0.1,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: '.contact-container',
+        start: 'top 70%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+  }, []);
 
   const handleChange = ({ target: { name, value } }) => {
     setForm((prevForm) => ({ ...prevForm, [name]: value }));
@@ -56,7 +91,7 @@ const Contact = () => {
           />
         </div>
         <div className="contact-container lg:py-8 py-7">
-          <h3 className="head-text">Let's talk</h3>
+          <h3 className="head-text contact-heading">Let's talk</h3>
           <p className="text-lg text-white-600 mt-3">
             Whether you're looking to build a new website, improve your existing platform, or bring a unique project to
             life, I'm here to help.

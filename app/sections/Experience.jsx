@@ -4,15 +4,51 @@
 
 // import Developer from '../components/Developer';
 // import CanvasLoader from '../components/Loading.jsx';
+import { useEffect } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { workExperiences } from '../constants/index.js';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const WorkExperience = () => {
 //   const [animationName, setAnimationName] = useState('idle');
 
+  useEffect(() => {
+    // Animate title
+    gsap.set('.experience-title', { opacity: 0, y: 20 });
+    gsap.to('.experience-title', {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: '.experience-title',
+        start: 'top 85%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+
+    // Animate work items with stagger
+    gsap.set('.work-content_container', { opacity: 0, x: -40 });
+    gsap.to('.work-content_container', {
+      opacity: 1,
+      x: 0,
+      duration: 0.8,
+      stagger: 0.15,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: '.work-content',
+        start: 'top 75%',
+        toggleActions: 'play none none reverse',
+      },
+    });
+  }, []);
+
   return (
     <section className="c-space my-20" id="work">
       <div className="w-full text-white-600">
-        <p className="head-text">My Work Experience</p>
+        <p className="head-text experience-title">My Work Experience</p>
 
         <div className="work-container">
           {/* <div className="work-canvas">
