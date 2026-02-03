@@ -5,12 +5,17 @@
 @tailwind utilities;
 
 * {
+  cursor: none !important;
+}
+
+html {
   scroll-behavior: smooth;
 }
 
 body {
   background: #010103;
   font-family: 'General Sans', sans-serif;
+  cursor: none !important;
 }
 
 @layer utilities {

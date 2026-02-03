@@ -67,7 +67,7 @@
 // export default Hero;
 
 import { Leva } from 'leva';
-import { Suspense } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { useMediaQuery } from 'react-responsive';
 import { PerspectiveCamera } from '@react-three/drei';
@@ -82,12 +82,24 @@ import { calculateSizes } from '../constants/index.js';
 import { HackerRoom } from '../components/HackerRoom.jsx';
 
 const Hero = () => {
+  const canvasRef = useRef(null);
+
   // Use media queries to determine screen size
   const isSmall = useMediaQuery({ maxWidth: 450 });
   const isMobile = useMediaQuery({ maxWidth: 768 });
   const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1024 });
 
   const sizes = calculateSizes(isSmall, isMobile, isTablet);
+
+  // Cleanup Canvas on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      // Canvas will be disposed automatically by React Three Fiber
+      if (canvasRef.current) {
+        // Additional cleanup if needed
+      }
+    };
+  }, []);
 
   return (
     <section className="min-h-screen w-full flex flex-col relative" id="home">
@@ -99,7 +111,19 @@ const Hero = () => {
       </div>
 
       <div className="w-full h-full absolute inset-0 lg:mt-10">
-        <Canvas className="w-full h-full">
+        <Canvas 
+          ref={canvasRef}
+          className="w-full h-full"
+          gl={{ 
+            antialias: true,
+            alpha: true,
+            powerPreference: 'high-performance',
+            preserveDrawingBuffer: false,
+            stencil: false,
+            depth: true,
+          }}
+          dpr={[1, 1.5]}
+        >
           <Suspense fallback={<CanvasLoader />}>
             {/* To hide controller */}
             <Leva hidden />
@@ -121,9 +145,9 @@ const Hero = () => {
         </Canvas>
       </div>
 
-      <div className="absolute bottom-5 mt-24 left-0 right-0 w-full z-10 c-space">
+      <div className="absolute bottom-0 left-0 right-0 w-full z-10 c-space">
         <a href="#about" className="w-fit">
-          <Button name="Let's work together" isBeam containerClass="sm:w-fit w-full sm:min-w-96 py-10 mt-20" />
+          <Button name="Let's work together" isBeam containerClass="sm:w-fit w-full sm:min-w-96 mt-10" />
         </a>
       </div>
     </section>

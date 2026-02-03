@@ -15,9 +15,9 @@ const Button = ({ name, isBeam = false, containerClass }) => {
     const handleMouseEnter = () => {
       gsap.to(button, {
         backgroundColor: 'rgba(100, 255, 218, 0.2)',
-        boxShadow: '0 0 30px rgba(100, 255, 218, 0.6), 0 0 60px rgba(100, 255, 218, 0.3)',
-        scale: 1.05,
-        duration: 0.3,
+        boxShadow: '0 0 25px rgba(100, 255, 218, 0.5)',
+        scale: 1.04,
+        duration: 0.15,
         ease: 'power2.out',
       });
     };
@@ -25,9 +25,9 @@ const Button = ({ name, isBeam = false, containerClass }) => {
     const handleMouseLeave = () => {
       gsap.to(button, {
         backgroundColor: 'rgba(100, 255, 218, 0)',
-        boxShadow: '0 0 15px rgba(100, 255, 218, 0.3)',
+        boxShadow: '0 0 12px rgba(100, 255, 218, 0.25)',
         scale: 1,
-        duration: 0.3,
+        duration: 0.15,
         ease: 'power2.out',
       });
     };

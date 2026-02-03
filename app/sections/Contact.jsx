@@ -19,49 +19,67 @@ const Contact = () => {
     gsap.to('.contact-heading', {
       opacity: 1,
       y: 0,
-      duration: 0.8,
+      duration: 0.6,
       ease: 'power3.out',
       scrollTrigger: {
         trigger: '.contact-heading',
         start: 'top 85%',
-        toggleActions: 'play none none reverse',
+        toggleActions: 'play none none none',
       },
     });
 
-    // Animate form with stagger
+    // Animate form with faster stagger
     gsap.set('.field-input, .field-label, .field-btn', { opacity: 0, y: 20 });
     gsap.to('.field-input, .field-label, .field-btn', {
       opacity: 1,
       y: 0,
-      duration: 0.6,
-      stagger: 0.1,
+      duration: 0.5,
+      stagger: 0.08,
       ease: 'power3.out',
       scrollTrigger: {
         trigger: '.contact-container',
         start: 'top 70%',
-        toggleActions: 'play none none reverse',
+        toggleActions: 'play none none none',
       },
     });
 
-    // Add input focus effects
+    // Add input focus effects with proper cleanup
     const inputs = document.querySelectorAll('.field-input');
-    inputs.forEach((input) => {
-      input.addEventListener('focus', () => {
-        gsap.to(input, {
-          boxShadow: '0 0 20px rgba(100, 255, 218, 0.3)',
-          borderColor: '#64ffda',
-          duration: 0.3,
-        });
-      });
+    const focusHandlers = [];
 
-      input.addEventListener('blur', () => {
+    inputs.forEach((input) => {
+      const handleFocus = () => {
+        gsap.to(input, {
+          boxShadow: '0 0 18px rgba(100, 255, 218, 0.25)',
+          borderColor: '#64ffda',
+          duration: 0.15,
+        });
+      };
+
+      const handleBlur = () => {
         gsap.to(input, {
           boxShadow: 'none',
           borderColor: 'rgba(255, 255, 255, 0.1)',
-          duration: 0.3,
+          duration: 0.15,
         });
-      });
+      };
+
+      input.addEventListener('focus', handleFocus);
+      input.addEventListener('blur', handleBlur);
+      
+      focusHandlers.push({ input, handleFocus, handleBlur });
     });
+
+    // Cleanup event listeners on unmount
+    return () => {
+      focusHandlers.forEach(({ input, handleFocus, handleBlur }) => {
+        input.removeEventListener('focus', handleFocus);
+        input.removeEventListener('blur', handleBlur);
+      });
+      
+      // Kill all GSAP animations for this component
+      gsap.killTweensOf('.contact-heading, .field-input, .field-label, .field-btn');
+    };
   }, []);
 
   const handleChange = ({ target: { name, value } }) => {

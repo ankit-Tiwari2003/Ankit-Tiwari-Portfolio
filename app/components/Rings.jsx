@@ -5,6 +5,7 @@ import { useCallback, useRef } from 'react';
 
 const Rings = ({ position }) => {
   const refList = useRef([]);
+  const timelineRef = useRef(null);
   const getRef = useCallback((mesh) => {
     if (mesh && !refList.current.includes(mesh)) {
       refList.current.push(mesh);
@@ -17,11 +18,16 @@ const Rings = ({ position }) => {
     () => {
       if (refList.current.length === 0) return;
 
+      // Kill previous timeline to prevent accumulation
+      if (timelineRef.current) {
+        timelineRef.current.kill();
+      }
+
       refList.current.forEach((r) => {
         r.position.set(position[0], position[1], position[2]);
       });
 
-      gsap
+      timelineRef.current = gsap
         .timeline({
           repeat: -1,
           repeatDelay: 0.5,
@@ -37,9 +43,15 @@ const Rings = ({ position }) => {
             },
           },
         );
+
+      return () => {
+        if (timelineRef.current) {
+          timelineRef.current.kill();
+        }
+      };
     },
     {
-      dependencies: position,
+      dependencies: [position],
     },
   );
 
@@ -48,7 +60,7 @@ const Rings = ({ position }) => {
       <group scale={0.5}>
         {Array.from({ length: 4 }, (_, index) => (
           <mesh key={index} ref={getRef}>
-            <torusGeometry args={[(index + 1) * 0.5, 0.1]}></torusGeometry>
+            <torusGeometry args={[(index + 1) * 0.5, 0.1]} dispose={true}></torusGeometry>
             <meshMatcapMaterial matcap={texture} toneMapped={false} />
           </mesh>
         ))}

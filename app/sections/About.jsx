@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { fadeInUp } from '../utils/animations';
 
@@ -14,7 +14,6 @@ const Globe = dynamic(() => import('react-globe.gl'), {
       </div>
     </div>
   ),
-  ssr: false
 });
 
 // Fallback component if Globe fails to load
@@ -28,29 +27,40 @@ import Button from '../components/Button.jsx';
 
 const About = () => {
   const [hasCopied, setHasCopied] = useState(false);
+  const globeRef = useRef(null);
 
   useEffect(() => {
     // Animate grid containers on scroll
     fadeInUp('.grid-container', {
-      duration: 0.8,
-      stagger: 0.15,
+      duration: 0.6,
+      stagger: 0.1,
       delay: 0,
     });
 
     // Add glow effects to containers on hover
     const containers = document.querySelectorAll('.grid-container');
+    const hoverListeners = [];
+    
     containers.forEach((container, index) => {
       const glows = ['glow-cyan', 'glow-blue', 'glow-purple', 'glow-pink', 'glow-emerald'];
       const glowClass = glows[index % glows.length];
 
-      container.addEventListener('mouseenter', () => {
-        container.classList.add(glowClass);
-      });
+      const handleMouseEnter = () => container.classList.add(glowClass);
+      const handleMouseLeave = () => container.classList.remove(glowClass);
 
-      container.addEventListener('mouseleave', () => {
-        container.classList.remove(glowClass);
-      });
+      container.addEventListener('mouseenter', handleMouseEnter);
+      container.addEventListener('mouseleave', handleMouseLeave);
+      
+      hoverListeners.push({ container, handleMouseEnter, handleMouseLeave });
     });
+
+    // Cleanup event listeners on unmount
+    return () => {
+      hoverListeners.forEach(({ container, handleMouseEnter, handleMouseLeave }) => {
+        container.removeEventListener('mouseenter', handleMouseEnter);
+        container.removeEventListener('mouseleave', handleMouseLeave);
+      });
+    };
   }, []);
 
   const handleCopy = () => {
@@ -106,18 +116,22 @@ const About = () => {
         <div className="col-span-1 xl:row-span-4">
           <div className="grid-container">
             <div className="rounded-3xl w-full sm:h-[326px] h-fit flex justify-center items-center">
-              <Globe
-                height={326}
-                width={326}
-                backgroundColor="rgba(0, 0, 0, 0)"
-                backgroundImageOpacity={0.5}
-                showAtmosphere
-                showGraticules
-                globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
-                bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
-                labelsData={[{ lat: 40, lng: -100, text: 'Rjieka, Croatia', color: 'white', size: 15 }]}
-                
-              />
+              <Suspense fallback={<GlobeFallback />}>
+                <Globe
+                  ref={globeRef}
+                  height={326}
+                  width={326}
+                  backgroundColor="rgba(0, 0, 0, 0)"
+                  backgroundImageOpacity={0.3}
+                  showAtmosphere={false}
+                  showGraticules={false}
+                  globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
+                  bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
+                  labelsData={[{ lat: 40, lng: -100, text: 'Rjieka, Croatia', color: 'white', size: 15 }]}
+                  autoRotate={true}
+                  autoRotateSpeed={0.5}
+                />
+              </Suspense>
             </div>
             <div>
               <div className="flex items-center gap-2 mb-2">

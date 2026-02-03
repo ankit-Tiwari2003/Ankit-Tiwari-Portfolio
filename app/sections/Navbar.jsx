@@ -27,8 +27,8 @@ const Navbar = () => {
         { 
           opacity: 1, 
           y: 0, 
-          duration: 0.6,
-          stagger: 0.1,
+          duration: 0.5,
+          stagger: 0.08,
           ease: 'power3.out'
         }
       );
@@ -39,32 +39,49 @@ const Navbar = () => {
         { 
           opacity: 1, 
           x: 0, 
-          duration: 0.6,
+          duration: 0.5,
           ease: 'power3.out'
         }
       );
 
-      // Add hover effects to nav links
+      // Simple color transition on hover (let CustomCursor handle scale)
       const navLinks = document.querySelectorAll('.nav-link-interactive');
+      const hoverHandlers = [];
+
       navLinks.forEach((link) => {
-        link.addEventListener('mouseenter', function() {
+        const handlePointerEnter = function() {
+          gsap.killTweensOf(this);
           gsap.to(this, {
             color: '#64ffda',
-            textShadow: '0 0 15px rgba(100, 255, 218, 0.6)',
-            duration: 0.3,
-            ease: 'power2.out'
+            duration: 0.12,
+            ease: 'power2.out',
+            overwrite: false
           });
-        });
+        };
 
-        link.addEventListener('mouseleave', function() {
+        const handlePointerLeave = function() {
+          gsap.killTweensOf(this);
           gsap.to(this, {
             color: 'inherit',
-            textShadow: 'none',
-            duration: 0.3,
-            ease: 'power2.out'
+            duration: 0.12,
+            ease: 'power2.out',
+            overwrite: false
           });
-        });
+        };
+
+        link.addEventListener('pointerenter', handlePointerEnter, { passive: true });
+        link.addEventListener('pointerleave', handlePointerLeave, { passive: true });
+        hoverHandlers.push({ link, handlePointerEnter, handlePointerLeave });
       });
+
+      // Cleanup
+      return () => {
+        hoverHandlers.forEach(({ link, handlePointerEnter, handlePointerLeave }) => {
+          link.removeEventListener('pointerenter', handlePointerEnter);
+          link.removeEventListener('pointerleave', handlePointerLeave);
+        });
+        gsap.killTweensOf('.nav-li_a, .navbar-brand');
+      };
     }, []);
 
     const toggleMenu = () => {

@@ -4,7 +4,7 @@
 
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { useRef, useState } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import { Float, useGLTF, useTexture } from '@react-three/drei';
 
 const Cube = ({ ...props }) => {
@@ -13,10 +13,16 @@ const Cube = ({ ...props }) => {
   const texture = useTexture('textures/cube.png');
 
   const cubeRef = useRef();
+  const timelineRef = useRef(null);
   const [hovered, setHovered] = useState(false);
 
   useGSAP(() => {
-    gsap
+    // Kill previous timeline to prevent accumulation
+    if (timelineRef.current) {
+      timelineRef.current.kill();
+    }
+
+    timelineRef.current = gsap
       .timeline({
         repeat: -1,
         repeatDelay: 0.5,
@@ -29,7 +35,21 @@ const Cube = ({ ...props }) => {
           each: 0.15,
         },
       });
-  });
+
+    return () => {
+      if (timelineRef.current) {
+        timelineRef.current.kill();
+      }
+    };
+  }, [hovered]);
+
+  const handlePointerEnter = useCallback(() => {
+    setHovered(true);
+  }, []);
+
+  const handlePointerLeave = useCallback(() => {
+    setHovered(false);
+  }, []);
 
   return (
     <Float floatIntensity={2}>
@@ -40,7 +60,8 @@ const Cube = ({ ...props }) => {
           receiveShadow
           geometry={nodes.Cube.geometry}
           material={nodes.Cube.material}
-          onPointerEnter={() => setHovered(true)}>
+          onPointerEnter={handlePointerEnter}
+          onPointerLeave={handlePointerLeave}>
           <meshMatcapMaterial matcap={texture} toneMapped={false} />
         </mesh>
       </group>

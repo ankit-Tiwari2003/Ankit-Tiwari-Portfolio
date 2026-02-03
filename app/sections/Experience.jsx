@@ -4,7 +4,7 @@
 
 // import Developer from '../components/Developer';
 // import CanvasLoader from '../components/Loading.jsx';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { workExperiences } from '../constants/index.js';
@@ -12,7 +12,7 @@ import { workExperiences } from '../constants/index.js';
 gsap.registerPlugin(ScrollTrigger);
 
 const WorkExperience = () => {
-//   const [animationName, setAnimationName] = useState('idle');
+  const scrollTriggerRefs = useRef([]);
 
   useEffect(() => {
     // Animate title
@@ -20,44 +20,69 @@ const WorkExperience = () => {
     gsap.to('.experience-title', {
       opacity: 1,
       y: 0,
-      duration: 0.8,
+      duration: 0.6,
       ease: 'power3.out',
       scrollTrigger: {
         trigger: '.experience-title',
         start: 'top 85%',
-        toggleActions: 'play none none reverse',
+        toggleActions: 'play none none none',
       },
     });
 
-    // Animate work items with stagger
+    // Animate work items with reduced stagger for performance
     gsap.set('.work-content_container', { opacity: 0, x: -40 });
     gsap.to('.work-content_container', {
       opacity: 1,
       x: 0,
-      duration: 0.8,
-      stagger: 0.15,
+      duration: 0.6,
+      stagger: 0.1,
       ease: 'power3.out',
       scrollTrigger: {
         trigger: '.work-content',
         start: 'top 75%',
-        toggleActions: 'play none none reverse',
+        toggleActions: 'play none none none',
       },
     });
 
-    // Add glow effects to work items on hover
+    // Add glow effects to work items on hover with optimized handlers
     const workItems = document.querySelectorAll('.work-content_container');
+    const glowHandlers = [];
+    const glows = ['glow-cyan', 'glow-purple', 'glow-blue', 'glow-pink'];
+
     workItems.forEach((item, index) => {
-      const glows = ['glow-cyan', 'glow-purple', 'glow-blue', 'glow-pink'];
       const glowClass = glows[index % glows.length];
 
-      item.addEventListener('mouseenter', () => {
+      // Use pointer events for better performance
+      const handlePointerEnter = () => {
         item.classList.add(glowClass);
-      });
-
-      item.addEventListener('mouseleave', () => {
+      };
+      
+      const handlePointerLeave = () => {
         item.classList.remove(glowClass);
-      });
+      };
+
+      item.addEventListener('pointerenter', handlePointerEnter, { passive: true });
+      item.addEventListener('pointerleave', handlePointerLeave, { passive: true });
+      glowHandlers.push({ item, handlePointerEnter, handlePointerLeave });
     });
+
+    // Cleanup
+    return () => {
+      glowHandlers.forEach(({ item, handlePointerEnter, handlePointerLeave }) => {
+        item.removeEventListener('pointerenter', handlePointerEnter);
+        item.removeEventListener('pointerleave', handlePointerLeave);
+      });
+      
+      // Kill ScrollTrigger instances for this section
+      ScrollTrigger.getAll().forEach(trigger => {
+        if (trigger.trigger?.classList?.contains('experience-title') || 
+            trigger.trigger?.classList?.contains('work-content')) {
+          trigger.kill();
+        }
+      });
+      
+      gsap.killTweensOf('.experience-title, .work-content_container');
+    };
   }, []);
 
   return (

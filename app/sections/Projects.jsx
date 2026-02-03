@@ -33,16 +33,20 @@ const Projects = () => {
     addCardHoverEffect('.project-content', 1.01);
     addGlowEffect('.project-link', '#64ffda');
 
-    // Add glow effect to project cards
+    // Add glow effect to project cards with proper cleanup
     const projectContent = document.querySelector('.project-content');
     if (projectContent) {
-      projectContent.addEventListener('mouseenter', () => {
-        projectContent.classList.add('glow-cyan-lg');
-      });
+      const handleMouseEnter = () => projectContent.classList.add('glow-cyan-lg');
+      const handleMouseLeave = () => projectContent.classList.remove('glow-cyan-lg');
 
-      projectContent.addEventListener('mouseleave', () => {
-        projectContent.classList.remove('glow-cyan-lg');
-      });
+      projectContent.addEventListener('mouseenter', handleMouseEnter);
+      projectContent.addEventListener('mouseleave', handleMouseLeave);
+
+      // Cleanup
+      return () => {
+        projectContent.removeEventListener('mouseenter', handleMouseEnter);
+        projectContent.removeEventListener('mouseleave', handleMouseLeave);
+      };
     }
   }, [selectedProjectIndex]);
 
@@ -62,19 +66,19 @@ const Projects = () => {
     gsap.to('.projects-title', {
       opacity: 1,
       y: 0,
-      duration: 0.8,
+      duration: 0.6,
       ease: 'power3.out',
       scrollTrigger: {
         trigger: '.projects-title',
         start: 'top 85%',
-        toggleActions: 'play none none reverse',
+        toggleActions: 'play none none none',
       },
     });
 
     gsap.fromTo(
       `.animatedText`,
       { opacity: 0 },
-      { opacity: 1, duration: 1, stagger: 0.2, ease: 'power2.inOut' }
+      { opacity: 1, duration: 0.8, stagger: 0.15, ease: 'power2.inOut' }
     );
 
     // Scroll trigger for project content
@@ -82,12 +86,12 @@ const Projects = () => {
     gsap.to('.project-content', {
       opacity: 1,
       y: 0,
-      duration: 0.8,
+      duration: 0.6,
       ease: 'power3.out',
       scrollTrigger: {
         trigger: '.project-content',
         start: 'top 80%',
-        toggleActions: 'play none none reverse',
+        toggleActions: 'play none none none',
       },
     });
   }, [selectedProjectIndex]);

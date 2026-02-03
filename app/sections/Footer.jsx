@@ -15,31 +15,39 @@ const Footer = () => {
       { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', stagger: 0.1 }
     );
 
-    // Social link hover effects with glow
+    // Social link hover effects with optimized timing
     const socialLinks = document.querySelectorAll('.social-icon');
+    const hoverHandlers = [];
+
     socialLinks.forEach((link) => {
-      link.addEventListener('mouseenter', () => {
+      const handlePointerEnter = () => {
         gsap.to(link, { 
-          scale: 1.2, 
+          scale: 1.15, 
           color: '#64ffda', 
-          duration: 0.3,
-          boxShadow: '0 0 30px rgba(100, 255, 218, 0.6), 0 0 60px rgba(100, 255, 218, 0.3)'
+          duration: 0.15,
+          boxShadow: '0 0 25px rgba(100, 255, 218, 0.5)'
         });
-      });
-      link.addEventListener('mouseleave', () => {
+      };
+      
+      const handlePointerLeave = () => {
         gsap.to(link, { 
           scale: 1, 
-          duration: 0.3,
-          boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)'
+          duration: 0.15,
+          boxShadow: '0 0 8px rgba(0, 0, 0, 0.2)'
         });
-      });
+      };
+
+      link.addEventListener('pointerenter', handlePointerEnter, { passive: true });
+      link.addEventListener('pointerleave', handlePointerLeave, { passive: true });
+      hoverHandlers.push({ link, handlePointerEnter, handlePointerLeave });
     });
 
     return () => {
-      socialLinks.forEach((link) => {
-        link.removeEventListener('mouseenter', () => {});
-        link.removeEventListener('mouseleave', () => {});
+      hoverHandlers.forEach(({ link, handlePointerEnter, handlePointerLeave }) => {
+        link.removeEventListener('pointerenter', handlePointerEnter);
+        link.removeEventListener('pointerleave', handlePointerLeave);
       });
+      gsap.killTweensOf('.footer-content, .social-icon');
     };
   }, []);
 
